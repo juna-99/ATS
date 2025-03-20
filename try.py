@@ -3,6 +3,7 @@ import pandas as pd
 from jamaibase import JamAI, protocol as p
 from tempfile import NamedTemporaryFile
 from PIL import Image
+import re  # Import re for regex operations
 
 # Initialize JamAI client
 jamai = JamAI(token="jamai_pat_14fd749c672579a73c16bedbb89128e74436ac4c4341d3cc", project_id="proj_e91a0d1a8de587573d87d334")
@@ -75,6 +76,13 @@ try:
         experience_filter = st.sidebar.selectbox("Filter by Experience:", ["All"] + df["Experience"].unique().tolist())
         decision_filter = st.sidebar.selectbox("Filter by Decision:", ["All", "Accepted", "Rejected"])
 
+        # Convert experience column to numerical values for correct sorting
+        def extract_total_experience(exp):
+            match = re.search(r"Total Experience:\s*(\d+)\s*years?", str(exp), re.IGNORECASE)
+            return int(match.group(1)) if match else 0  # Extract the number of years, default to 0 if not found
+
+        df["Experience Years"] = df["Experience"].apply(extract_total_experience)  # Apply function
+
         # Apply filters
         if experience_filter != "All":
             df = df[df["Experience"] == experience_filter]
@@ -83,7 +91,10 @@ try:
 
         # Sorting
         sort_by = st.sidebar.selectbox("Sort by:", ["Candidate Name", "Experience", "Decision"])
-        df = df.sort_values(by=sort_by)
+        if sort_by == "Experience":
+            df = df.sort_values(by="Experience Years", ascending=False)  # Sort by numerical experience
+        else:
+            df = df.sort_values(by=sort_by)
 
         # Summary Metrics
         total_candidates = len(df)
