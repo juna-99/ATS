@@ -50,30 +50,36 @@ try:
     if not rows.items:
         st.info("No resumes found. Please upload resumes.")
     else:
+        # Extract values correctly and fix Decision field
         def extract_values(row):
+            decision_text = row["Decision"]["value"].strip()
+            decision = "Rejected" if "Rejected" in decision_text else "Accepted" if "Accepted" in decision_text else "Pending"
             return {
-                "Candidate Name": row["Candidate Information"]["value"],
-                "Experience": row["Experience"]["value"],
-                "Education": row["Education"]["value"],
-                "Skills": row["Skills"]["value"],
-                "Projects": row["Projects"]["value"],
-                "Overall Assessment": row["Overall Assessment"]["value"],
-                "Decision": row["Decision"]["value"]
+                "Candidate Name": row["Candidate Information"]["value"].strip(),
+                "Experience": row["Experience"]["value"].replace("Experience:", "").strip(),
+                "Education": row["Education"]["value"].replace("Education:", "").strip(),
+                "Skills": row["Skills"]["value"].replace("Skills:", "").strip(),
+                "Projects": row["Projects"]["value"].replace("Projects:", "").strip(),
+                "Overall Assessment": row["Overall Assessment"]["value"].replace("Overall Assessment:", "").strip(),
+                "Decision": decision
             }
 
         candidate_data = [extract_values(row) for row in rows.items]
         df = pd.DataFrame(candidate_data)
 
+        # Normalize Decision column
+        df["Decision"] = df["Decision"].astype(str).str.strip().str.lower()
+
         # Filters
         st.sidebar.subheader("🔍 Filter Candidates")
         experience_filter = st.sidebar.selectbox("Filter by Experience:", ["All"] + df["Experience"].unique().tolist())
-        decision_filter = st.sidebar.selectbox("Filter by Decision:", ["All"] + df["Decision"].unique().tolist())
-        
+        decision_filter = st.sidebar.selectbox("Filter by Decision:", ["All", "Accepted", "Rejected"])
+
         # Apply filters
         if experience_filter != "All":
             df = df[df["Experience"] == experience_filter]
         if decision_filter != "All":
-            df = df[df["Decision"] == decision_filter]
+            df = df[df["Decision"] == decision_filter.lower()]
 
         # Sorting
         sort_by = st.sidebar.selectbox("Sort by:", ["Candidate Name", "Experience", "Decision"])
@@ -81,7 +87,6 @@ try:
 
         # Summary Metrics
         total_candidates = len(df)
-        df["Decision"] = df["Decision"].astype(str).str.strip().str.lower()  # Normalize decision values
         accepted_candidates = len(df[df["Decision"] == "accepted"])
         rejected_candidates = len(df[df["Decision"] == "rejected"])
         st.markdown(f"**Total Candidates:** {total_candidates} | **Accepted:** {accepted_candidates} | **Rejected:** {rejected_candidates}")
@@ -94,7 +99,7 @@ try:
                 st.write(f"**Skills:** {row['Skills']}")
                 st.write(f"**Projects:** {row['Projects']}")
                 st.write(f"**Overall Assessment:** {row['Overall Assessment']}")
-                st.write(f"**Final Decision:** {row['Decision']}")
+                st.write(f"**Final Decision:** {row['Decision'].capitalize()}")
 
         # Download as CSV
         csv = df.to_csv(index=False).encode('utf-8')
