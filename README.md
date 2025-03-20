@@ -14,7 +14,7 @@ This **AI-Powered Applicant Tracking System (ATS)** leverages **JamAI Base** and
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/yourusername/ai-ats.git
+git clone https://github.com/juna-99/ATS.git
 cd ai-ats
 ```
 
@@ -45,6 +45,8 @@ streamlit run app.py
 3. **AI extracts and evaluates** candidate details.
 4. **Sort & filter** candidates based on experience and decision.
 5. **Download results** as a CSV report.
+
+#  Sample 
 
 ## ✨ Future Enhancements
 - Support for **PDF & DOCX** resume formats.
