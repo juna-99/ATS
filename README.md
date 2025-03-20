@@ -46,7 +46,10 @@ streamlit run app.py
 4. **Sort & filter** candidates based on experience and decision.
 5. **Download results** as a CSV report.
 
-#  Sample 
+##  📰 Sample 
+ ![Alt text](https://github.com/juna-99/ATS/blob/85508b4aacb52fafc7b93903a379eb1b8a3f6b0a/blob/Streamlit-app1.png)
+
+ ![Alt text](https://github.com/juna-99/ATS/blob/85508b4aacb52fafc7b93903a379eb1b8a3f6b0a/blob/Streamlit-app%202.png)
 
 ## ✨ Future Enhancements
 - Support for **PDF & DOCX** resume formats.
