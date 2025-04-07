@@ -6,7 +6,7 @@ from PIL import Image
 import re  # Import re for regex operations
 
 # Initialize JamAI client
-jamai = JamAI(token="jamai_pat_14fd749c672579a73c16bedbb89128e74436ac4c4341d3cc", project_id="proj_e91a0d1a8de587573d87d334")
+jamai = JamAI(token=st.secrets["JAMAI_TOKEN"], project_id=st.secrets["JAMAI_PROJECT_ID"])
 
 # Streamlit page config
 st.set_page_config(page_title="AI-Powered ATS", page_icon="📄", layout="wide")
